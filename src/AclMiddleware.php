@@ -30,16 +30,17 @@ class AclMiddleware
      * Handle incoming request.
      * @param \Illuminate\Http\Request $request
      * @param Closure $next
+     * @param string|null $model
      * @param string|null $action
      * @return mixed
      */
-    public function handle($request, Closure $next, $action = null, $model = null)
+    public function handle(\Illuminate\Http\Request $request, Closure $next, $model = null, $action = null)
     {
         $action = [
             'id' => !is_null($action) ? $action : $this->resolveAction($request)
         ];
         $environment = $this->resolveEnvironment($request);
-        $resource    = $this->resolveResource($request);
+        $resource    = $this->resolveResource($request, $model);
         $subject     = $this->resolveSubject($request);
 
         $access_request  = new AccessRequest(compact('action','environment', 'resource', 'subject'));
@@ -122,9 +123,10 @@ class AclMiddleware
 
     /**
      * @param $http_request
+     * @param null $model
      * @return array|null[]
      */
-    private function resolveResource($http_request)
+    private function resolveResource($http_request, $model = null)
     {
         $segments = $http_request->segments();
         $resource_type = null;
@@ -139,7 +141,7 @@ class AclMiddleware
         }
 
         return [
-            'model' => $resource_type,
+            'model' => $model ? $model : $resource_type,
             'uuid' => $resource_uuid,
         ];
     }
