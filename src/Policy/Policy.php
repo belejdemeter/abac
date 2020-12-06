@@ -83,6 +83,7 @@ class Policy
                 return null;
             }, $value);
         }
+        return $value;
     }
 
 

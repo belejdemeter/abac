@@ -22,12 +22,6 @@ class ArrayParser
     {
         // <PolicySet> is an aggregation of other policy sets or policies
         return $this->parsePolicySet($node);
-
-//        elseif (isset($node['rules'])) {
-//            return$this->parsePolicy($node);
-//        } else {
-//            throw new Exception('The root element must be a policy set');
-//        }
     }
 
 
