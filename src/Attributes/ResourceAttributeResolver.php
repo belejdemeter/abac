@@ -5,6 +5,7 @@ namespace Core\Acl\Attributes;
 use Core\Acl\Contracts\AttributeResolverInterface;
 use Core\Acl\Request;
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request as HttpRequest;
 
 class ResourceAttributeResolver implements AttributeResolverInterface
@@ -41,18 +42,19 @@ class ResourceAttributeResolver implements AttributeResolverInterface
 
         if ($model && array_key_exists($model, $resource_map) && $id) {
             $class = '\\'.$resource_map[$model];
-            $query = new $class;
-            $resource = $query::find($id);
-            $resource->model = $model;
+            /** @var Model $instance */
+            $instance = new $class;
+            $instance->setHidden([]);
+            $resource = $instance::query()->find($id);
+            $resource->setAttribute('model', $model);
         } else {
             $resource = $request->get('resource');
+            // Merge params from http request for get requests (index, show, create).
+            foreach ($this->http->all() as $key => $value) {
+                data_set($resource, $key, $value);
+            }
         }
-
-        // Merge params from http request for get requests (index, show, create, edit).
-        foreach ($this->http->all() as $key => $value) {
-            data_set($resource, $key, $value);
-        }
-
+        
         return $resource;
     }
 }

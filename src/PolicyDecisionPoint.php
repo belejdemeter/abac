@@ -50,7 +50,7 @@ class PolicyDecisionPoint implements Contract
 
         // Fill request with additional attributes received from PIP...
         foreach ($attributes as $category => $values) {
-            foreach ($values as $key => $value) $request->set("$category.$key", $value);
+            $request->set($category, $values);
         }
 
         return $root_policy->evaluate($request);
@@ -84,7 +84,8 @@ class PolicyDecisionPoint implements Contract
     protected function combine($policies)
     {
         // The default root policy combing algorithm is deny-override.
-        $algorithm = new Algorithm\DenyOverrides;
+        // @todo Extract this into config better...
+        $algorithm = new Algorithm\DenyUnlessPermit();
 
         if ($policies instanceof Policy || $policies instanceof PolicySet) {
             $children = [$policies];
