@@ -10,7 +10,9 @@ abstract class AbstractFunction
     public function evaluate(Request $request, ?string $designator, ?string $selector, $value = null)
     {
         $expected = $request->get($designator, null);
-        $value = $value ? $value : $request->get($selector, null);
+        if ($selector != null) {
+            $value = $request->get('selector');
+        }
         try {
             return $this->handle($expected, $value);
         } catch (\Exception $e) {

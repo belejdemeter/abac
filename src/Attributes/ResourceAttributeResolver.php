@@ -54,7 +54,7 @@ class ResourceAttributeResolver implements AttributeResolverInterface
                 data_set($resource, $key, $value);
             }
         }
-        
+
         return $resource;
     }
 }
