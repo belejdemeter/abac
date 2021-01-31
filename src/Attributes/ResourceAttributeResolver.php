@@ -46,7 +46,11 @@ class ResourceAttributeResolver implements AttributeResolverInterface
             $instance = new $class;
             $instance->setHidden([]);
             $resource = $instance::query()->find($id);
-            $resource->setAttribute('model', $model);
+            if ($resource) {
+                $resource->setAttribute('model', $model);
+            } else {
+                $resource = (object) ['model', $model];
+            }
         } else {
             $resource = $request->get('resource');
             // Merge params from http request for get requests (index, show, create).
