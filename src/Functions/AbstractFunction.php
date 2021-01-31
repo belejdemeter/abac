@@ -11,7 +11,7 @@ abstract class AbstractFunction
     {
         $expected = $request->get($designator, null);
         if ($selector != null) {
-            $value = $request->get('selector');
+            $value = $request->get($selector);
         }
         try {
             return $this->handle($expected, $value);
