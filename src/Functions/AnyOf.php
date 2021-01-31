@@ -12,6 +12,7 @@ class AnyOf extends AbstractFunction
     protected function handle($expected = null, $value = null)
     {
         if (!is_array($value)) $value = [$value];
+        if (!is_array($expected)) $expected = [$expected];
         return count(array_intersect($expected, $value)) > 0;
     }
 }
